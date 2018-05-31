@@ -1,9 +1,9 @@
 import React from "react";
 import createPlugin from "./createPlugin";
-import Component from "./TestComponent";
+import HTML5Video from "./HTML5Video";
 
 const textPlugin = createPlugin({
-  Component,
+  Component: HTML5Video,
   name: "ory-editor-plugins/test",
   text: "TEST",
   description: "test Plugin",
