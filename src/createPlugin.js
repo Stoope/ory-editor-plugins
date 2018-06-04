@@ -1,5 +1,3 @@
-import React from "react";
-
 const rejectPromise = (e, props) => Promise.reject();
 
 const createPlugin = props => ({

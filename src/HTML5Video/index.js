@@ -1,6 +1,6 @@
 import React from "react";
 import BottomToolbar from "../BottomToolbar";
-import View from "./View";
+import plugin from "./View";
 import TextField from "@material-ui/core/TextField";
 
 class HTML5Video extends React.Component {
@@ -19,10 +19,10 @@ class HTML5Video extends React.Component {
             />
           </BottomToolbar>
         ) : null}
-        <View state={state} />
+        <plugin.Component state={state} />
       </div>
     );
   }
 }
 
-export default HTML5Video;
+export default { ...plugin, Component: HTML5Video };

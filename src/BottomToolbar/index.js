@@ -1,17 +1,21 @@
 import React from "react";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
 
-const containerStyle = {
-  backgroundColor: "white"
-};
+const theme = createMuiTheme({
+  palette: {
+    type: "dark"
+  }
+});
 
-const anchorOrigin = { vertical: "bottom", horizontal: "center" };
-
-const BottomToolbar = ({ open = false, children, className }) => (
+const BottomToolbar = ({ open = false, children }) => (
   <Snackbar
-    anchorOrigin={anchorOrigin}
     open={open}
-    message={<div style={containerStyle}>{children}</div>}
+    message={
+      <div>
+        <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+      </div>
+    }
   />
 );
 
