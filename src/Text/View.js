@@ -1,61 +1,36 @@
 import React from "react";
 import createPlugin from "../createPlugin";
-import Subject from "@material-ui/icons/Subject";
-// import { lineBreakSerializer, defaultPlugins } from "./hooks";
-import Html from "slate-html-serializer";
-// import AlignmentPlugin from "./plugins/alignment";
-// import BlockquotePlugin from "./plugins/blockquote";
-// import CodePlugin from "./plugins/code";
-// import EmphasizePlugin from "./plugins/emphasize";
-// import HeadingsPlugin from "./plugins/headings";
-// import LinkPlugin from "./plugins/link";
-// import ListsPlugin from "./plugins/lists";
-import ParagraphPlugin, { P } from "./plugins/paragraph";
 
-const DEFAULT_NODE = P;
-export const defaultPlugins = [
-  new ParagraphPlugin()
-  // new EmphasizePlugin(),
-  // new HeadingsPlugin({ DEFAULT_NODE }),
-  // new LinkPlugin(),
-  // new CodePlugin({ DEFAULT_NODE }),
-  // new ListsPlugin({ DEFAULT_NODE }),
-  // new BlockquotePlugin({ DEFAULT_NODE }),
-  // new AlignmentPlugin()
-  // new KatexPlugin({ DEFAULT_NODE })
-];
+const Icon = ({ style }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="rgb(255, 255, 255)"
+  >
+    <path d="M14 17H4v2h10v-2zm6-8H4v2h16V9zM4 15h16v-2H4v2zM4 5v2h16V5H4z" />
+    <path d="M0 0h24v24H0z" fill="none" />
+  </svg>
+);
 
-export const lineBreakSerializer = {
-  deserialize(el) {
-    if (el.tagName.toLowerCase() === "br") {
-      return { kind: "text", text: "\n" };
-    }
-  },
-  serialize(object, children) {
-    if (object.type === "text" || children === "\n") {
-      return <br />;
-    }
-  }
-};
-
-export const html = new Html({
-  rules: [...defaultPlugins, lineBreakSerializer]
-});
-
-const View = ({ state: { editorState } }) => {
-  console.log(editorState);
+const View = ({ state }) => {
   return (
-    <div dangerouslySetInnerHTML={{ __html: html.serialize(editorState) }} />
+    <div className="ql-editor">
+      <div
+        className="ql-container"
+        dangerouslySetInnerHTML={{
+          __html: state.html
+        }}
+      />
+    </div>
   );
 };
 
 export default createPlugin({
   Component: View,
-  name: "ory-editor-plugins/slate",
-  version: "0.0.1",
-  IconComponent: <Subject />,
+  name: "ory-editor-plugins/text",
   text: "Текст",
   description: "Область с текстом.",
-
-  allowInlineNeighbours: true
+  IconComponent: <Icon />
 });

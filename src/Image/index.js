@@ -43,7 +43,6 @@ class Image extends React.Component {
               value={state.src}
               onChange={this.handleChange(onChange)}
             />
-            <br />
             <TextField
               placeholder="http://example.com"
               label="Url перехода по клику"
@@ -51,8 +50,6 @@ class Image extends React.Component {
               value={state.href}
               onChange={this.handleChange(onChange)}
             />
-            <br />
-            <br />
             <FormControlLabel
               control={
                 <Checkbox

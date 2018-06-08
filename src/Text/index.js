@@ -1,163 +1,52 @@
-import Subject from "@material-ui/icons/Subject";
-import { compose, flatten, map, mergeAll, prop, pathOr } from "ramda";
-import { Html } from "slate";
-import React from "react";
-import { ActionTypes } from "redux-undo";
-import Component from "./Component";
-import * as hooks from "./hooks";
+import React, { Fragment } from "react";
+import plugin from "./View";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-const createNodes = compose(mergeAll, map(prop("nodes")));
-const createMarks = compose(mergeAll, map(prop("marks")));
-const createPlugins = compose(flatten, map(prop("plugins")));
+class Text extends React.Component {
+  onChange = value => this.props.onChange({ html: value });
 
-export const createInitialState = hooks.createInitialState;
+  render() {
+    const { readOnly, state, focused } = this.props;
+    return (
+      <Fragment>
+        {!readOnly ? (
+          <Fragment>
+            <ReactQuill
+              modules={{
+                toolbar: focused
+                  ? [
+                      ["bold", "italic", "underline", "strike"], // toggled buttons
+                      ["blockquote", "code-block"],
 
-export const html = new Html({
-  rules: [...hooks.defaultPlugins, hooks.lineBreakSerializer]
-});
+                      [{ header: 1 }, { header: 2 }], // custom button values
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      [{ script: "sub" }, { script: "super" }], // superscript/subscript
+                      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+                      [{ direction: "rtl" }], // text direction
 
-export default (plugins = hooks.defaultPlugins) => {
-  const props = {};
-  props.schema = {
-    nodes: createNodes(plugins),
-    marks: createMarks(plugins)
-  };
-  props.plugins = createPlugins(plugins);
-  props.onKeyDown = (e, data, state) => {
-    // we need to prevent slate from handling undo and redo
-    if (data.isMod && (data.key === "z" || data.key === "y")) {
-      return state;
-    }
+                      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+                      [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-    if (data.isShift && data.key === "enter") {
-      return state
-        .transform()
-        .insertText("\n")
-        .apply();
-    }
+                      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+                      [{ font: [] }],
+                      [{ align: [] }],
 
-    for (let i = 0; i < plugins.length; i++) {
-      const { onKeyDown } = plugins[i];
-      const newState = onKeyDown && onKeyDown(e, data, state);
+                      ["clean"] // remove formatting button
+                    ]
+                  : null
+              }}
+              value={state.html || ""}
+              onChange={this.onChange}
+              placeholder="Введите текст..."
+            />
+          </Fragment>
+        ) : (
+          <plugin.Component {...this.props} />
+        )}
+      </Fragment>
+    );
+  }
+}
 
-      if (newState) {
-        return newState;
-      }
-    }
-
-    return;
-  };
-
-  const HoverButtons = ({ editorState, onChange, focus }) => (
-    <div>
-      {plugins.map((plugin, i) =>
-        plugin.hoverButtons.map((Button, j) => (
-          <Button
-            key={`${i}-${j}`}
-            editorState={editorState}
-            onChange={onChange}
-            focus={focus}
-          />
-        ))
-      )}
-    </div>
-  );
-  props.HoverButtons = HoverButtons;
-
-  const ToolbarButtons = ({ editorState, onChange, focus }) => (
-    <div>
-      {plugins.map((plugin, i) =>
-        plugin.toolbarButtons.map((Button, j) => (
-          <Button
-            key={`${i}-${j}`}
-            editorState={editorState}
-            onChange={onChange}
-            focus={focus}
-          />
-        ))
-      )}
-    </div>
-  );
-  props.ToolbarButtons = ToolbarButtons;
-
-  const Slate = cellProps => <Component {...cellProps} {...props} />;
-  const StaticComponent = ({ state: { editorState } = {} }) => (
-    <div dangerouslySetInnerHTML={{ __html: html.serialize(editorState) }} />
-  );
-  return {
-    Component: Slate,
-    StaticComponent,
-
-    name: "ory-editor-plugins/slate",
-    version: "0.0.1",
-    IconComponent: <Subject />,
-    text: "Текст",
-    description: "Область с текстом.",
-
-    allowInlineNeighbours: true,
-
-    handleFocus: (props, source) => {
-      if (source === "onMouseDown") {
-        return;
-      } else if (props.state.editorState.isFocused) {
-        return;
-      }
-
-      setTimeout(() => {
-        props.onChange({
-          editorState: props.state.editorState
-            .transform()
-            .focus()
-            .apply()
-        });
-      }, 0);
-    },
-
-    handleBlur: props => {
-      if (!props.state.editorState.isFocused) {
-        return;
-      }
-
-      props.onChange({
-        editorState: props.state.editorState
-          .transform()
-          .blur()
-          .apply()
-      });
-    },
-
-    reducer: (state, action) => {
-      if (
-        (action.type === ActionTypes.UNDO ||
-          action.type === ActionTypes.REDO) &&
-        pathOr(false, ["content", "state", "editorState"], state)
-      ) {
-        return {
-          ...state,
-          content: {
-            ...state.content,
-            state: {
-              ...state.content.state,
-              editorState: state.content.state.editorState.merge({
-                isNative: false
-              })
-            }
-          }
-        };
-      }
-      return state;
-    },
-
-    handleRemoveHotKey: hooks.handleRemoveHotKey,
-    handleFocusPreviousHotKey: hooks.handleFocusPreviousHotKey,
-    handleFocusNextHotKey: hooks.handleFocusNextHotKey,
-
-    createInitialState: hooks.createInitialState,
-    serialize: hooks.serialize,
-    unserialize: hooks.unserialize
-
-    // TODO this is disabled because of #207
-    // merge = hooks.merge
-    // split = hooks.split
-  };
-};
+export default { ...plugin, Component: Text };

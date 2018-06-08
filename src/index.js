@@ -1,4 +1,5 @@
-import textPlugin from "./HTML5Video";
 import Image from "./Image";
+import Text from "./Text";
+import Video from "./Video";
 
-export { textPlugin, Image };
+export { Image, Text, Video };
