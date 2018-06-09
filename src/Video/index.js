@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import BottomToolbar from "../BottomToolbar";
 import plugin from "./View";
 import TextField from "@material-ui/core/TextField";

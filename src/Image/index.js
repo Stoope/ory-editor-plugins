@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import BottomToolbar from "../BottomToolbar";
+import UploadFile from "../UploadFile";
 import plugin from "./View";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -36,13 +37,21 @@ class Image extends React.Component {
         <plugin.Component {...this.props} />
         {!readOnly && (
           <BottomToolbar open={focused}>
-            <TextField
-              placeholder="http://example.com/image.png"
-              label="Url изображения"
-              name="src"
-              value={state.src}
-              onChange={this.handleChange(onChange)}
-            />
+            <div style={{ display: "flex" }}>
+              <TextField
+                placeholder="http://example.com/image.png"
+                label="Url изображения"
+                name="src"
+                style={{ flex: "1" }}
+                value={state.src}
+                onChange={this.handleChange(onChange)}
+              />
+              <UploadFile
+                onSuccess={file =>
+                  file[0] && this.props.onChange({ src: file[0].url })
+                }
+              />
+            </div>
             <TextField
               placeholder="http://example.com"
               label="Url перехода по клику"
