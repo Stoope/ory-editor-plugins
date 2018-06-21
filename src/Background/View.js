@@ -14,12 +14,19 @@ const Icon = () => (
   </svg>
 );
 
-const View = ({ state: { background = "", darken = 0.3 }, children }) => {
+const View = ({ state: { background, darken, type, color }, children }) => {
+  let bg = null;
+  if (type === "image") {
+    bg = {
+      backgroundImage: `linear-gradient(rgba(0, 0, 0, ${darken}), rgba(0, 0, 0, ${darken})), url('${background}')`
+    };
+  } else if (type === "color") {
+    bg = { backgroundColor: color };
+  }
   return (
     <div
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, ${darken}), rgba(0, 0, 0, ${darken})), url('${background}')`,
-        backgroundAttachment: "fixed",
+        ...bg,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -37,5 +44,11 @@ export default createPlugin({
   name: "ory-editor-plugins/background",
   text: "Задний фон",
   description: "Секция с изменяемым задним фоном",
-  IconComponent: <Icon />
+  IconComponent: <Icon />,
+  createInitialState: () => ({
+    background: "",
+    darken: 0.3,
+    type: "image",
+    color: ""
+  })
 });

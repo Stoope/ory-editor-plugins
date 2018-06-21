@@ -29,7 +29,9 @@ const BottomToolbar = ({ open = false, children }) => (
     >
       <MuiThemeProvider theme={theme}>
         {children && Array.isArray(children) ? (
-          children.map(item => <div style={childStyle}>{item}</div>)
+          children
+            .filter(item => item)
+            .map(item => <div style={childStyle}>{item}</div>)
         ) : (
           <div style={childStyle}>{children}</div>
         )}
