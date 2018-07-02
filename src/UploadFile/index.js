@@ -26,7 +26,7 @@ class Component extends React.Component {
     }
   };
   render() {
-    const { multiple = false } = this.props;
+    const { multiple = false, text = "Выбрать ..." } = this.props;
     const { loading } = this.state;
     return (
       <Fragment>
@@ -46,7 +46,7 @@ class Component extends React.Component {
             color="default"
             disabled={loading}
           >
-            Выбрать ...
+            {text}
             <FileUpload />
             {loading && (
               <CircularProgress
