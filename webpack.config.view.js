@@ -7,7 +7,8 @@ module.exports = {
   entry: ["./src/indexViewOnly.js"],
   output: {
     path: path.resolve(__dirname, "plugins/viewOnly"),
-    filename: "index.js"
+    filename: "index.js",
+    libraryTarget: "umd"
   },
   optimization: {
     minimizer: [
