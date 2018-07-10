@@ -14,7 +14,12 @@ const generateClassName = createGenerateClassName({
 
 const theme = createMuiTheme({
   palette: {
-    type: "dark"
+    type: "dark",
+    secondary: {
+      light: '#3a7ad9',
+      main: '#3a7ad9',
+      dark: '#3a7ad9',
+    },
   }
 });
 const childStyle = {
