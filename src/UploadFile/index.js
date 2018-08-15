@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import Button from "@material-ui/core/Button";
-import FileUpload from "@material-ui/icons/FileUpload";
+import CloudUpload from "@material-ui/icons/CloudUpload";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import green from "@material-ui/core/colors/green";
 
@@ -47,7 +47,7 @@ class Component extends React.Component {
             disabled={loading}
           >
             {text}
-            <FileUpload />
+            <CloudUpload />
             {loading && (
               <CircularProgress
                 size={24}
